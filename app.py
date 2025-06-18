@@ -4,10 +4,8 @@ import numpy as np
 
 app = Flask(__name__)
 
-# Load model
 model = joblib.load("model/gdp_model.pkl")
 
-# Define the 16 features
 FEATURES = [
     "Phones_(per_1000)", "Agriculture", "Service", "Arable_(%)", "Crops_(%)",
     "Deathrate", "Net_migration", "Birthrate", "Area_(sq._mi.)", "Population",
