@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GDP per Capita Prediction</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f0f4f7, #dbe9f4);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 40px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0c3c78;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        input {
+            padding: 10px;
+            border: 1px solid #bbb;
+            border-radius: 8px;
+            font-size: 1em;
+            width: 95%;
+        }
+
+        button {
+            grid-column: span 2;
+            padding: 14px;
+            background-color: #0c3c78;
+            color: white;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #0a2f5d;
+        }
+
+        .result {
+            grid-column: span 2;
+            background-color: #e6f4ea;
+            border-left: 6px solid #3cba54;
+            padding: 15px;
+            margin-top: 30px;
+            font-size: 1.2em;
+            color: #144c1a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 GDP per Capita Predictor</h1>
+        <form action="/predict" method="POST">
+            {% for feature in features %}
+                <div>
+                    <label for="{{ feature }}">{{ feature.replace("_", " ") }}</label>
+                    <input type="number" step="any" name="{{ feature }}" required>
+                </div>
+            {% endfor %}
+
+            <button type="submit">🔮 Predict GDP</button>
+
+            {% if prediction %}
+                <div class="result">
+                    <strong>Predicted GDP per Capita:</strong> {{ prediction }}
+                </div>
+            {% endif %}
+        </form>
+    </div>
+</body>
+</html>
