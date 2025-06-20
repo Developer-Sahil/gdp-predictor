@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GDP Prediction</title>
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a1a40;
+            margin-bottom: 40px;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .submit-btn {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        input[type="submit"] {
+            background-color: #1a1a40;
+            color: white;
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #333366;
+        }
+
+        @media (max-width: 600px) {
+            .form-group {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>GDP Prediction Form</h1>
+    <form method="POST" action="/predict">
+        {% for field in ['Region', 'Population', 'Area_(sq._km)', 'Pop._Density_(per_sq._km)', 
+               'Coastline_(coast/area_ratio)', 'Net_migration', 'Literacy_(%)', 
+               'Phones_(per_1000)', 'Arable_(%)', 'Crops_(%)', 'Climate', 'Birthrate', 'Deathrate', 'Agriculture', 'Industry', 'Service'] %}
+            <div class="form-group">
+                <label for="{{ field }}">{{ field.replace('_', ' ') }}</label>
+                <input type="text" id="{{ field }}" name="{{ field }}" placeholder="Enter value">
+            </div>
+        {% endfor %}
+        <div class="submit-btn">
+            <input type="submit" value="Predict">
+        </div>
+    </form>
+</div>
+</body>
+</html>
