@@ -24,18 +24,14 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split,GridSearchCV
 
-from sklearn.svm import SVR
-from sklearn.neighbors import KNeighborsRegressor
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from sklearn.tree import plot_tree
-
 # Load Dataset
 df=pd.read_csv(path+"/countries of the world.csv")
 
 df.head()
 
 df.info()
+
+df.describe()
 
 #Univariate Analysis
 df['GDP ($ per capita)'].hist(bins=30, color='skyblue')
@@ -44,9 +40,16 @@ plt.xlabel('GDP ($ per capita)')
 plt.ylabel('Frequency')
 plt.show()
 
+sns.countplot(x='Region', data=df)
+plt.title("Country Count by Region")
+
 #Bivariate Analysis
 sns.scatterplot(data=df, x='Literacy (%)', y='GDP ($ per capita)')
 plt.title('GDP vs Literacy')
+plt.show()
+
+sns.scatterplot(x='Phones_(per_1000)', y='GDP_($_per_capita)', data=df)
+plt.title("GDP vs Phones per 1000")
 plt.show()
 
 #Multivariate Analysis
@@ -60,7 +63,6 @@ df.columns = df.columns.str.strip().str.replace(" ", "_")
 
 df.drop(["Country", "Other_(%)", "Infant_mortality_(per_1000_births)"], axis=1, inplace=True)
 
-
 df.isnull().sum()
 
 # Handle Numbers with Commas
@@ -68,10 +70,8 @@ for col in df.columns[1:]:
     df[col] = df[col].astype(str).str.replace(",", ".")
     df[col] = pd.to_numeric(df[col], errors='coerce')
 
-
 # Drop rows with NaNs
 df.dropna(inplace=True)
-
 
 numeric_cols = df.columns.drop("Region")
 numeric_cols = numeric_cols.drop("GDP_($_per_capita)")
@@ -80,7 +80,6 @@ print(numeric_cols)
 # Encode Categorical Column
 le = LabelEncoder()
 df['Region'] = le.fit_transform(df['Region'])
-df
 
 # Remove outliers using IQR
 def remove_outliers_iqr(dataframe, columns):
@@ -94,7 +93,6 @@ def remove_outliers_iqr(dataframe, columns):
     return dataframe
 
 df = remove_outliers_iqr(df, numeric_cols).reset_index(drop=True)
-df
 
 # Features and Target
 X = df.drop("GDP_($_per_capita)", axis=1)
@@ -117,7 +115,11 @@ y_pred_rf = model1.predict(X_test)
 print("R2 Score:", r2_score(y_test, y_pred_rf))
 print("RMSE:", np.sqrt(mean_squared_error(y_test, y_pred_rf)))
 
-
+from sklearn.svm import SVR
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.tree import plot_tree
 
 #hyper parametric tuning
 param_grid = {
@@ -152,7 +154,7 @@ print("RMSE:", rmse)
 print("MAE:", mae)
 
 #decision tree
-model2= DecisionTreeRegressor(random_state=42, max_depth=5) # Limiting depth for simplicity and to prevent overfitting
+model2= DecisionTreeRegressor(random_state=42, max_depth=5)
 model2.fit(X_train, y_train)
 
 y_pred_dt= model2.predict(X_test)
@@ -181,9 +183,9 @@ print(rmse_reg)
 print(r2_reg)
 
 #SVR
-model_svr = SVR(kernel='rbf', C=1.0, epsilon=0.1, gamma='scale') # Using RBF kernel
+model_svr = SVR(kernel='rbf', C=1.0, epsilon=0.1, gamma='scale')
 model_svr.fit(X_train, y_train)
-y_pred_svr = model_svr.predict(X_test) # Use scaled data for prediction
+y_pred_svr = model_svr.predict(X_test)
 
 mse_reg = mean_squared_error(y_test, y_pred_svr)
 rmse_reg = np.sqrt(mse_reg)
@@ -225,7 +227,14 @@ plt.ylabel("Predicted GDP per Capita")
 plt.title("Actual vs Predicted GDP per Capita")
 plt.show()
 
-
+plt.figure(figsize=(10, 6))
+plt.scatter(y_test, y_pred_rf, alpha=0.7, color='green')
+plt.xlabel("Actual GDP")
+plt.ylabel("Predicted GDP")
+plt.title("Actual vs Predicted GDP (Random Forest)")
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--')
+plt.grid(True)
+plt.show()
 
 # Feature Importance Visualization
 importances = best_rf.feature_importances_
@@ -237,8 +246,8 @@ sns.barplot(x=importances, y=feature_names)
 plt.title("Feature Importances from Tuned Random Forest")
 plt.xlabel("Importance Score")
 plt.ylabel("Features")
+plt.tight_layout()
 plt.show()
-
 
 # Visualize a single decision tree from the forest
 plt.figure(figsize=(20, 10))
@@ -246,7 +255,7 @@ plot_tree(best_rf.estimators_[0],
           feature_names=feature_names,
           filled=True,
           rounded=True,
-          max_depth=3,  # You can increase this if desired
+          max_depth=3,
           fontsize=10)
 plt.title("Visualization of One Decision Tree from the Random Forest")
 plt.show()
