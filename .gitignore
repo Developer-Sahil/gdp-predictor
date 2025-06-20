@@ -17,7 +17,7 @@ ENV/
 .DS_Store
 Thumbs.db
 
-*.pkl
+# *.pkl
 *.joblib
 *.h5
 
